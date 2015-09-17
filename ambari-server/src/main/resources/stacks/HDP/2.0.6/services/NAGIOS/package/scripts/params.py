@@ -77,7 +77,7 @@ else:
 check_result_path = "/var/nagios/spool/checkresults"
 nagios_log_dir = "/var/log/nagios"
 nagios_log_archives_dir = format("{nagios_log_dir}/archives")
-nagios_host_cfg = format("{nagios_obj_dir}/hadoop-hosts.cfg")
+nagios_host_cfg = format("{nagios_obj_dirh}/hadoop-hosts.cfg")
 nagios_lookup_daemon_str = "/usr/sbin/nagios"
 nagios_pid_dir = status_params.nagios_pid_dir
 nagios_pid_file = status_params.nagios_pid_file
@@ -190,7 +190,13 @@ hbase_master_rpc_port = default('/configurations/hbase-site/hbase.master.port', 
 rm_port = get_port_from_url(config['configurations']['yarn-site'][yarn_rm_webui_property])
 hs_port = get_port_from_url(config['configurations']['mapred-site'][mapreduce_jobhistory_webui_property])
 hive_metastore_port = get_port_from_url(config['configurations']['hive-site']['hive.metastore.uris']) #"9083"
-hive_server_port = default('/configurations/hive-site/hive.server2.thrift.port',"10000")
+hive_server_transport_mode = config['configurations']['hive-site']['hive.server2.transport.mode']
+if hive_server_transport_mode == 'binary':
+  hive_server_port = config['configurations']['hive-site']['hive.server2.thrift.port']
+elif hive_server_transport_mode == 'http':
+  hive_server_port = config['configurations']['hive-site']['hive.server2.thrift.http.port']
+else:
+  hive_server_port = "10000"
 templeton_port = config['configurations']['webhcat-site']['templeton.port'] #"50111"
 hbase_master_port = config['configurations']['hbase-site']['hbase.master.info.port'] #"60010"
 hbase_rs_port = config['configurations']['hbase-site']['hbase.regionserver.info.port'] #"60030"
